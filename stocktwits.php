@@ -2,7 +2,7 @@
 /*
 Plugin Name: StockTwits
 Plugin URI: http://www.stocktwits.com/
-Version: 1.0
+Version: 1.1
 Author: StockTwits
 Author URI: http://stocktwits.com/
 Description: Plugin shows the most recent posts from www.StockTwits.com website as a widget. Choose to show your stock messages, just the Ticker stream or the All stream.
