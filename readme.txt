@@ -21,3 +21,7 @@ Then add it as a widget, theme code, or simple code method to your blog.
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Adjust the plugin settings through the 'Settings' menu. Choose the widget Title, type of stream (All, Ueername, Ticker), atuo-refresh rate. 
 4. Insert plugin into a theme using the php code snippet or use the simple tag within a post or use a sidebar widget.
+
+== Screenshots ==
+
+1. This is the default look of the plugin in your sidebar. It uses an auto width and height
