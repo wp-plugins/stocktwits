@@ -1,4 +1,4 @@
-=== StockTwits Ticker Link ===
+=== StockTwits Widget ===
 Contributors: stocktwits, Chris Corriveau
 Tags: stocks, finance, investment, links, stocktwits, twitter
 Requires at least: 2.2
