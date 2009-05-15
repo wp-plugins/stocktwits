@@ -2,7 +2,7 @@
 /*
 Plugin Name: StockTwits
 Plugin URI: http://www.stocktwits.com/
-Version: 1.1
+Version: 1.2
 Author: StockTwits
 Author URI: http://stocktwits.com/
 Description: Plugin shows the most recent posts from www.StockTwits.com website as a widget. Choose to show your stock messages, just the Ticker stream or the All stream.
@@ -222,6 +222,7 @@ class StockTwits
       $widget_html = preg_replace ('|__USERNAME__|',        $username,                                                                                               $widget_html);
       $widget_html = preg_replace ('|__TWITS_NUM__|',       $number_of_twits?$number_of_twits:$this->stocktwits_options['number_of_twits'],                          $widget_html);
       $widget_html = preg_replace ('|__AUTO_REFRESH__|',    $auto_refresh_in_seconds?$auto_refresh_in_seconds:$this->stocktwits_options['auto_refresh_in_seconds'],  $widget_html);
+      $widget_html = preg_replace ('|__JSON_PROXY__|',      GetBaseDirURL () . '/stocktwits-json.php',                                                               $widget_html);
 
       return ($widget_html);
       }
@@ -326,4 +327,19 @@ function enforce_values ($input, $min, $max)
 }
 //===========================================================================
 
+//===========================================================================
+//
+// Returns no-slashed WEB URL of directory where this file is.
+
+function GetBaseDirURL ()
+{
+   // (Subtract DOCUMENT_ROOT from __FILE__ (NOT from SCRIPT_FILENAME! - which could be /) and append result to SERVER_NAME, replacing file part with filename.js)
+   //
+   $base_dir_url = rtrim (str_replace ('\\', '/', dirname(__FILE__)), '/');
+   $pos = strlen(rtrim ($_SERVER['DOCUMENT_ROOT'], '\\/'));
+   $base_dir_url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . trim (substr ($base_dir_url, $pos), '/');
+
+   return ($base_dir_url);
+}
+//===========================================================================
 ?>

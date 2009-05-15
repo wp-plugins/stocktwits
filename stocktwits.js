@@ -29,7 +29,7 @@ StockTwits.inner_html =
 //===========================================================================
 StockTwits.LoadWidget = function ()
 {
-    var url      = 'http://' + location.hostname + '/wp-content/plugins/stocktwits/stocktwits-json.php';
+    var url      = StockTwits.json_proxy;
 
     jQuery.getJSON (url + '?username=' + StockTwits.widget_settings.username + '&jsoncallback=?',  function(data)
         {
@@ -44,17 +44,17 @@ StockTwits.LoadWidget = function ()
 /*
     StockTwits.widget_settings =
         {
-        title:                      "StockTwits Widget",
+        title:                      "Stocktwits widget",
         username:                   "StockTwits",
         number_of_twits:            10,
-        auto_refresh_in_seconds:    30
+        auto_refresh_in_seconds:    15
         };
 */
 StockTwits.Display = function (json)
 {
     // Set widget title.
     $("#StockTwits_wrapper").html(StockTwits.inner_html);
-    $("#StockTwits_wrapper #moduleFooter").html('Powered by <a href="http://www.stocktwits.com/">StockTwits</a>');
+    $("#StockTwits_wrapper #moduleFooter").html('powered by <a href="http://www.stocktwits.com/">StockTwits.com</a>');
 
     var date = new Date();
 //  $("#StockTwits_wrapper #moduleHeader #moduleTitle").html(StockTwits.widget_settings.title + "&nbsp;&nbsp;(" + date.toString().match (/\d\d\:\d\d\:\d\d/) + ")");
