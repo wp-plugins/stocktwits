@@ -3,7 +3,7 @@ Contributors: stocktwits, Chris Corriveau
 Tags: stocks, finance, investment, links, stocktwits, twitter
 Requires at least: 2.2
 Tested up to: 2.7
-Stable tag: 1.1
+Stable tag: 1.2
 
 The StockTwits plugin shows the most recent posts from www.StockTwits.com website as a widget. Choose to show your stock messages, just the Ticker stream, or the All stream. Show the messages in a post, in a theme, or as a widget. 
 
