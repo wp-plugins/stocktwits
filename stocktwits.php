@@ -2,7 +2,7 @@
 /*
 Plugin Name: StockTwits
 Plugin URI: http://www.stocktwits.com/
-Version: 1.2
+Version: 1.3
 Author: StockTwits
 Author URI: http://stocktwits.com/
 Description: Plugin shows the most recent posts from www.StockTwits.com website as a widget. Choose to show your stock messages, just the Ticker stream or the All stream.
@@ -24,6 +24,7 @@ define('WIDGET_HTML_TEMPLATE', <<<WIDGET_HTML
               number_of_twits:         __TWITS_NUM__,
               auto_refresh_in_seconds: __AUTO_REFRESH__
               };
+          StockTwits.json_proxy_dir_url = '__JSON_PROXY_DIR_URL__';
           google.load ("jquery", "1");
           google.setOnLoadCallback (function(){StockTwits.LoadWidget();});
       </script>
@@ -222,7 +223,7 @@ class StockTwits
       $widget_html = preg_replace ('|__USERNAME__|',        $username,                                                                                               $widget_html);
       $widget_html = preg_replace ('|__TWITS_NUM__|',       $number_of_twits?$number_of_twits:$this->stocktwits_options['number_of_twits'],                          $widget_html);
       $widget_html = preg_replace ('|__AUTO_REFRESH__|',    $auto_refresh_in_seconds?$auto_refresh_in_seconds:$this->stocktwits_options['auto_refresh_in_seconds'],  $widget_html);
-      $widget_html = preg_replace ('|__JSON_PROXY__|',      GetBaseDirURL () . '/stocktwits-json.php',                                                               $widget_html);
+      $widget_html = preg_replace ('|__JSON_PROXY_DIR_URL__|',  get_base_dir_url (),                                                                                 $widget_html);
 
       return ($widget_html);
       }
@@ -331,9 +332,9 @@ function enforce_values ($input, $min, $max)
 //
 // Returns no-slashed WEB URL of directory where this file is.
 
-function GetBaseDirURL ()
+function get_base_dir_url ()
 {
-   // (Subtract DOCUMENT_ROOT from __FILE__ (NOT from SCRIPT_FILENAME! - which could be /) and append result to SERVER_NAME, replacing file part with filename.js)
+   // (Subtract DOCUMENT_ROOT from __FILE__ (NOT from SCRIPT_FILENAME! - which could be /) and append result to HTTP_HOST, replacing file part with filename.js)
    //
    $base_dir_url = rtrim (str_replace ('\\', '/', dirname(__FILE__)), '/');
    $pos = strlen(rtrim ($_SERVER['DOCUMENT_ROOT'], '\\/'));
@@ -342,4 +343,45 @@ function GetBaseDirURL ()
    return ($base_dir_url);
 }
 //===========================================================================
+
+//===========================================================================
+// log_event (__FILE__, __LINE__, "Message", "extra data");
+
+if (!function_exists('log_event'))
+   {
+   function log_event ($filename, $linenum, $message, $extra_text="")
+   {
+      $log_filename   = dirname(__FILE__) . '/__log.php';
+      $logfile_header = '<?php header("Location: /"); exit();' . "\r\n" . '/* =============== LOG file =============== */' . "\r\n";
+      $logfile_tail   = "\r\n?>";
+
+      // Delete too long logfiles.
+      if (@file_exists ($log_filename) && @filesize($log_filename)>1000000)
+         unlink ($log_filename);
+
+      $filename = basename ($filename);
+
+      if (file_exists ($log_filename))
+         {
+         // 'r+' non destructive R/W mode.
+         $fhandle = fopen ($log_filename, 'r+');
+         if ($fhandle)
+            fseek ($fhandle, -strlen($logfile_tail), SEEK_END);
+         }
+      else
+         {
+         $fhandle = fopen ($log_filename, 'w');
+         if ($fhandle)
+            fwrite ($fhandle, $logfile_header);
+         }
+
+      if ($fhandle)
+         {
+         fwrite ($fhandle, "\r\n// " . $_SERVER['REMOTE_ADDR'] . ' -> ' . date("Y-m-d, G:i:s.u") . "|$filename($linenum)|: " . $message . ($extra_text?"\r\n//    Extra Data: $extra_text":"") . $logfile_tail);
+         fclose ($fhandle);
+         }
+   }
+}
+//===========================================================================
+
 ?>

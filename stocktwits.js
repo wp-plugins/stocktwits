@@ -14,22 +14,10 @@ And here - use this:
 
 var StockTwits = {};
 
-StockTwits.inner_html =
-    '<div id="moduleHeader" class="moduleHeader">'                            +
-        '<div id="moduleIcon" class="ico">'                                   +
-            '<img height="16" width="16" src="http://' + location.hostname + '/wp-content/plugins/stocktwits/stocktwits-favicon.gif"/>' +
-         '</div>'                                                             +
-         '<div class="title" id="moduleTitle"> My StockTwits Updates</div>'   +
-    '</div>'                                                                  +
-    '<div id="moduleContent" class="moduleContent"></div>'                    +
-    '<div align="center" id="moduleFooter" class="moduleFooter"></div>' +
-    '';
-
-
 //===========================================================================
 StockTwits.LoadWidget = function ()
 {
-    var url      = StockTwits.json_proxy;
+    var url      = StockTwits.json_proxy_dir_url + '/stocktwits-json.php';
 
     jQuery.getJSON (url + '?username=' + StockTwits.widget_settings.username + '&jsoncallback=?',  function(data)
         {
@@ -44,7 +32,7 @@ StockTwits.LoadWidget = function ()
 /*
     StockTwits.widget_settings =
         {
-        title:                      "Stocktwits widget",
+        title:                      "StockTwits Widget",
         username:                   "StockTwits",
         number_of_twits:            10,
         auto_refresh_in_seconds:    15
@@ -52,6 +40,17 @@ StockTwits.LoadWidget = function ()
 */
 StockTwits.Display = function (json)
 {
+StockTwits.inner_html =
+    '<div id="moduleHeader" class="moduleHeader">'                            +
+        '<div id="moduleIcon" class="ico">'                                   +
+            '<img height="16" width="16" src="http://' + location.hostname + '/wp-content/plugins/stocktwits/stocktwits-favicon.gif"/>' +
+         '</div>'                                                             +
+         '<div class="title" id="moduleTitle"> My StockTwits Updates</div>'   +
+    '</div>'                                                                  +
+    '<div id="moduleContent" class="moduleContent"></div>'                    +
+    '<div align="center" id="moduleFooter" class="moduleFooter"></div>' +
+    '';
+
     // Set widget title.
     $("#StockTwits_wrapper").html(StockTwits.inner_html);
     $("#StockTwits_wrapper #moduleFooter").html('powered by <a href="http://www.stocktwits.com/">StockTwits.com</a>');
