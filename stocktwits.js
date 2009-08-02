@@ -35,7 +35,7 @@ StockTwits.LoadWidget = function ()
         title:                      "StockTwits Widget",
         username:                   "StockTwits",
         number_of_twits:            10,
-        auto_refresh_in_seconds:    15
+        auto_refresh_in_seconds:    60
         };
 */
 StockTwits.Display = function (json)
@@ -48,12 +48,12 @@ StockTwits.inner_html =
          '<div class="title" id="moduleTitle"> My StockTwits Updates</div>'   +
     '</div>'                                                                  +
     '<div id="moduleContent" class="moduleContent"></div>'                    +
-    '<div align="center" id="moduleFooter" class="moduleFooter"></div>' +
+    '<div align="center" id="moduleFooter" class="moduleFooter"><strong>Search <a href="http://stocktwits.com">StockTwits</a></strong><br /><form action="http://stocktwits.com/search" method="get" target="_new"><input class="searchfield" id="search_q" maxlength="100" name="q" size="25" value="Search by ticker or company" onclick="javascript:this.value=\'\';" type="text" /><input id="submitglass" value="Search" type="submit" /></form></div>' +
     '';
 
     // Set widget title.
     $("#StockTwits_wrapper").html(StockTwits.inner_html);
-    $("#StockTwits_wrapper #moduleFooter").html('powered by <a href="http://www.stocktwits.com/">StockTwits.com</a>');
+
 
     var date = new Date();
 //  $("#StockTwits_wrapper #moduleHeader #moduleTitle").html(StockTwits.widget_settings.title + "&nbsp;&nbsp;(" + date.toString().match (/\d\d\:\d\d\:\d\d/) + ")");

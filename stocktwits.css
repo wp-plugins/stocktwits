@@ -6,7 +6,6 @@ StockTwits.css
 #StockTwits_wrapper {
     font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
     font-size:11px;
-	border: 1px solid #ddd;
     background:#FFF none repeat scroll 0 0;
     margin:5px auto 0;
     padding: 0;
@@ -45,10 +44,11 @@ StockTwits.css
 }
 
 .moduleFooter {
-   padding:1px;
+   padding:3px 8px;
    font-size:0.9em;
    border-top: 1px solid #ddd;
    background-color: #eee;
+   text-align: left;
    }
 
 p.status {

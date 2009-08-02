@@ -2,7 +2,7 @@
 /*
 Plugin Name: StockTwits
 Plugin URI: http://www.stocktwits.com/
-Version: 1.3
+Version: 1.4
 Author: StockTwits
 Author URI: http://stocktwits.com/
 Description: Plugin shows the most recent posts from www.StockTwits.com website as a widget. Choose to show your stock messages, just the Ticker stream or the All stream.
@@ -11,7 +11,7 @@ Description: Plugin shows the most recent posts from www.StockTwits.com website 
 define ('DEFAULT_WIDGET_TITLE',           'StockTwits - All Updates');
 define ('DEFAULT_USERNAME',               'all');
 define ('DEFAULT_NUM_OF_TWITS',           10);
-define ('DEFAULT_AUTO_REFRESH_IN_SECS',   30);
+define ('DEFAULT_AUTO_REFRESH_IN_SECS',   60);
 
 
 define('WIDGET_HTML_TEMPLATE', <<<WIDGET_HTML
@@ -242,7 +242,7 @@ $g_StockTwits_Plugin = new StockTwits();
 //Initialize the admin panel
 add_action ('admin_menu',        'StockTwits_AdminPanel');
 add_action ('init',              'init_action' );
-add_action ('wp_head',           'header_action',10);    // Load our custom stylesheet after anything else.
+add_action ('wp_head',           'header_action2',10);    // Load our custom stylesheet after anything else.
 add_action ('plugins_loaded',    'RegisterStockTwitsWidget');
 
 add_filter ('the_content',       array(&$g_StockTwits_Plugin, 'ContentFilter'), 9);
@@ -311,7 +311,7 @@ function init_action ()
 //===========================================================================
 
 //===========================================================================
-function header_action ()
+function header_action2 ()
 {
    echo '<link type="text/css" rel="stylesheet" href="/' . PLUGINDIR . '/stocktwits/stocktwits.css" />' . "\n";
 }
