@@ -9,10 +9,10 @@
             if ($_GET['username'][0] == '!' || $_GET['username'][0] == '$')
                {
                $ticker = substr ($_GET['username'], 1);
-               $url = "http://stocktwits.com/symbol/{$ticker}.json";
+               $url = "http://stocktwits.com/t/{$ticker}.json";
                }
             else
-               $url = "http://stocktwits.com/{$_GET['username']}.json";
+               $url = "http://stocktwits.com/u/{$_GET['username']}.json";
             }
         $data = @file_get_contents ($url);
         $data = $_GET['jsoncallback'] . "(" . $data . ")";
