@@ -73,10 +73,10 @@ StockTwits.inner_html =
         p.attr('class', 'status ' + ((i % 2 == 0) ? 'odd' : 'even'));
 
         p.html(
-            '<a href="http://stocktwits.com/u/' + twit.twitter_username + '"><img width="32" height="32" src="' + twit.avatar_url + '" /></a>'  +
-            '<a href="http://stocktwits.com/u/' + twit.twitter_username + '" class="user">' + twit.twitter_username + '</a> ' +
+            '<a href="http://stocktwits.com/' + twit.twitter_username + '"><img width="32" height="32" src="' + twit.avatar_url + '" /></a>'  +
+            '<a href="http://stocktwits.com/' + twit.twitter_username + '" class="user">' + twit.twitter_username + '</a> ' +
             when.tweet_time() +
-            '<a href="http://stocktwits.com/u/' + twit.twitter_username + '/' + twit.status_id + '" class="user">#</a><br />' +
+            '<a href="http://stocktwits.com/' + twit.twitter_username + '/message/' + twit.status_id + '" class="user">#</a><br />' +
             text
             );
 
@@ -94,8 +94,8 @@ StockTwits.tweet_text_filter = function (text)
     var financetalk = /(\s|^)\$\$(\s|$)/g;
 
     return text.replace(link, '<a href="$1" class="link" rel="nofollow" target="_blank">$1</a> ').
-        replace (reply, '<a href="http://stocktwits.com/u/$1" class="reply">@$1</a>').
-        replace (ticker, '<a href="http://stocktwits.com/t/$1" class="ticker"><span>$$</span>$1</a>').
+        replace (reply, '<a href="http://stocktwits.com/$1" class="reply">@$1</a>').
+        replace (ticker, '<a href="http://stocktwits.com/symbol/$1" class="ticker"><span>$$</span>$1</a>').
         replace (financetalk, ' <span class="financetalk">$$$$</span> ');
 }
 //===========================================================================
