@@ -1,0 +1,110 @@
+/*
+StockTwits.css
+*/
+
+
+#StockTwits_wrapper {
+    font-family:Tahoma,Verdana,Arial,Helvetica,"Bitstream Vera Sans",sans-serif;
+    font-size:11px;
+    background:#FFF none repeat scroll 0 0;
+    margin:5px auto 0;
+    padding: 0;
+    text-align:left;
+    }
+
+.moduleHeader {
+    background:#F4F4F4 url(widgetheader.png) repeat-x scroll center center;
+    padding:3px 0 5px;
+    margin: 0;
+    height:1.8em;
+    min-height:20px;
+    overflow:hidden;
+    position:relative;
+    }
+
+.moduleHeader .ico {
+    border-bottom:medium none;
+    float: left;
+    padding: 5px;
+    margin:0;
+    }
+
+.moduleHeader .title {
+    color:#222;
+    font-weight:bold;
+    line-height:1.8em;
+    padding-left:25px;
+    }
+
+.moduleContent {
+    background:#FFFFFF none repeat scroll 0 0;
+    /* clear:both; */
+    padding:7px;
+    margin:0;
+}
+
+.moduleFooter {
+   padding:3px 8px;
+   font-size:0.9em;
+   border-top: 1px solid #ddd;
+   background-color: #eee;
+   text-align: left;
+   }
+
+#sidebar p.status, p.status {
+    margin:5px 0;
+    padding:5px;
+    min-height:36px;
+    /* clear:both; */
+    overflow:hidden;
+    }
+
+#sidebar p.status.even, #sidebar p.status.odd,
+p.status.even, p.status.odd {
+    font-size:1em;
+    line-height: 1.2em;
+    }
+
+p.status.even {
+    background-color: #E6F1FF;
+    }
+
+p.status div.avatar {
+   float:left;
+   margin:3px 3px 0 0;
+   border:1px solid #DDD;
+   }
+
+#sidebar p.status img, p.status img {
+   margin:0;
+    }
+
+p.status a.user, p.status a.reply {
+    color: #600F0B;
+    }
+
+p.status a.user, p.status a.reply {
+    color: #600F0B;
+    }
+
+p.status a.user:hover, p.status a.reply:hover {
+    border-bottom: 1px solid #600F0B;
+    color: #600F0B;
+    }
+
+p.status a.ticker {
+    color: #000000;
+    font-weight: bold;
+    }
+
+p.status a.ticker:hover {
+    color: #723127;
+    font-weight: bold;
+    border-bottom: 1px solid #723127;
+    }
+
+p.status  span.financetalk {
+    color:#00350A;
+    font-style:italic
+    }
+
