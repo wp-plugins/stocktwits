@@ -211,7 +211,7 @@ class StockTwits
    //------------------------------------------
 
    //------------------------------------------
-   public function GetWidgetHTML ($widget_title=0, $username=0, $number_of_twits=0, $auto_refresh_in_seconds=0)
+   public function GetWidgetHTML ($widget_title=0, $username='all', $number_of_twits=0, $auto_refresh_in_seconds=0)
       {
       $widget_html = WIDGET_HTML_TEMPLATE;
 
@@ -313,7 +313,8 @@ function init_action ()
 //===========================================================================
 function header_action2 ()
 {
-   echo '<link type="text/css" rel="stylesheet" href="/' . PLUGINDIR . '/stocktwits/stocktwits.css" />' . "\n";
+   echo '<link type="text/css" rel="stylesheet" href="' . get_base_dir_url () . '/stocktwits.css" />' . "\n";
+
 }
 //===========================================================================
 
@@ -334,12 +335,7 @@ function enforce_values ($input, $min, $max)
 
 function get_base_dir_url ()
 {
-   // (Subtract DOCUMENT_ROOT from __FILE__ (NOT from SCRIPT_FILENAME! - which could be /) and append result to HTTP_HOST, replacing file part with filename.js)
-   //
-   $base_dir_url = rtrim (str_replace ('\\', '/', dirname(__FILE__)), '/');
-   $pos = strlen(rtrim ($_SERVER['DOCUMENT_ROOT'], '\\/'));
-   $base_dir_url = 'http://' . $_SERVER['HTTP_HOST'] . '/' . trim (substr ($base_dir_url, $pos), '/');
-
+   $base_dir_url = get_bloginfo ('wpurl') . preg_replace ('#^.*[/\\\\](.*?)[/\\\\].*?$#', "/wp-content/plugins/$1", __FILE__);
    return ($base_dir_url);
 }
 //===========================================================================

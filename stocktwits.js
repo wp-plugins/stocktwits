@@ -60,23 +60,23 @@ StockTwits.inner_html =
     $("#StockTwits_wrapper #moduleHeader #moduleTitle").html(StockTwits.widget_settings.title);
 
     var count = 0;
-    var limit = Math.min (StockTwits.widget_settings.number_of_twits, json['stream']['tweets'].length);
+    var limit = Math.min (StockTwits.widget_settings.number_of_twits, json['messages'].length);
 
     var widget_content = $("#StockTwits_wrapper #moduleContent").html("");
 
     for (var i=0; i<limit; i++)
         {
-        var twit = json['stream']['tweets'][i];
-        var when = StockTwits.date (twit.tweet_datetime);
-        var text = StockTwits.tweet_text_filter (twit.tweet_text);
+        var twit = json['messages'][i]['message'];
+        var when = StockTwits.date (twit.updated_at);
+        var text = StockTwits.tweet_text_filter (twit.body);
         var p = $("<p/>");
         p.attr('class', 'status ' + ((i % 2 == 0) ? 'odd' : 'even'));
 
         p.html(
-            '<a href="http://stocktwits.com/' + twit.twitter_username + '"><img width="32" height="32" src="' + twit.avatar_url + '" /></a>'  +
-            '<a href="http://stocktwits.com/' + twit.twitter_username + '" class="user">' + twit.twitter_username + '</a> ' +
+            '<div class="avatar"><a href="http://stocktwits.com/' + twit.user_login + '"><img width="32" height="32" src="' + twit.avatar_url + '" /></a></div>'  +
+            '<a href="http://stocktwits.com/' + twit.user_login + '" class="user">' + twit.user_login + '</a> ' +
             when.tweet_time() +
-            '<a href="http://stocktwits.com/' + twit.twitter_username + '/message/' + twit.status_id + '" class="user">#</a><br />' +
+            '<a href="http://stocktwits.com/' + twit.user_login + '/message/' + twit.id + '" class="user">#</a><br />' +
             text
             );
 
@@ -103,9 +103,7 @@ StockTwits.tweet_text_filter = function (text)
 //===========================================================================
 StockTwits.date = function(date)
 {
-        var dateArray = date.split(' ');
-        var date = new Date(dateArray[0] + ', ' + dateArray[2] + ' ' + dateArray[1] + ' ' + dateArray[3] + ' ' + dateArray[5].substring(0,4));
-        date.setTime(date.getTime() - date.getTimezoneOffset()*60*1000);
+        var date = new Date (date);
 
         return date;
 };
