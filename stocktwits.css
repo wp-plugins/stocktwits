@@ -51,7 +51,7 @@ StockTwits.css
    text-align: left;
    }
 
-p.status {
+#sidebar p.status, p.status {
     margin:5px 0;
     padding:5px;
     min-height:36px;
@@ -59,18 +59,24 @@ p.status {
     overflow:hidden;
     }
 
+#sidebar p.status.even, #sidebar p.status.odd,
 p.status.even, p.status.odd {
     font-size:1em;
-    line-height: 1.1em;
+    line-height: 1.2em;
     }
 
 p.status.even {
     background-color: #E6F1FF;
     }
 
-p.status img {
-    float:left;
-    margin-right:5px;
+p.status div.avatar {
+   float:left;
+   margin:3px 3px 0 0;
+   border:1px solid #DDD;
+   }
+
+#sidebar p.status img, p.status img {
+   margin:0;
     }
 
 p.status a.user, p.status a.reply {
