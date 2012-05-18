@@ -2,33 +2,32 @@
 /*
 Plugin Name: StockTwits
 Plugin URI: http://www.stocktwits.com/
-Version: 1.5
+Version: 1.6
 Author: StockTwits
 Author URI: http://stocktwits.com/
 Description: Plugin shows the most recent posts from www.StockTwits.com website as a widget. Choose to show your stock messages, just the Ticker stream or the All stream.
 */
 
-define ('DEFAULT_WIDGET_TITLE',           'StockTwits - All Updates');
-define ('DEFAULT_USERNAME',               'all');
-define ('DEFAULT_NUM_OF_TWITS',           10);
-define ('DEFAULT_AUTO_REFRESH_IN_SECS',   60);
-
+define ('DEFAULT_WIDGET_TITLE',           'StockTwits Updates');
+define ('DEFAULT_SYMBOL',                 'AAPL');
+define ('DEFAULT_USERNAME',               '');
+define ('DEFAULT_LIMIT',                  '15');
 
 define('WIDGET_HTML_TEMPLATE', <<<WIDGET_HTML
       <!-- StockTwits.com WIDGET CODE START -->
-      <script type="text/javascript">
-          StockTwits.widget_settings =
-              {
-              title:                   '__TITLE__',
-              username:                '__USERNAME__',           // AAPL(ticker symbol), userjoe(some username, such as: StockTwits) or all(everyone)
-              number_of_twits:         __TWITS_NUM__,
-              auto_refresh_in_seconds: __AUTO_REFRESH__
-              };
-          StockTwits.json_proxy_dir_url = '__JSON_PROXY_DIR_URL__';
-          google.load ("jquery", "1");
-          google.setOnLoadCallback (function(){StockTwits.LoadWidget();});
+      <div id="stocktwits-widget-news"></div>
+      <script language="javascript">
+        STWT.Widget({
+              container: 'stocktwits-widget-news',  
+              symbol: '__SYMBOL__',
+              user: '__USERNAME__',
+              limit: '__LIMIT__',
+              width: '275',
+              height: '500', 
+              header: '0',
+              style: { link_color: '1111cc; text-decoration:underline', link_hover_color: '1111cc; text-decoration:none'
+                }});
       </script>
-      <div id="StockTwits_wrapper"><div id="moduleContent" class="moduleContent">Loading...</div></div>
       <!-- StockTwits.com WIDGET CODE END -->
 WIDGET_HTML
        );
@@ -54,49 +53,10 @@ class StockTwits
       if (is_feed())
          return ($this->ContentFilter_stub ($content));
 
-      if (!preg_match ('|\[stocktwits([^\]]*)\]|i', $content, $matches))
-       return $content;
-
-      $widget_title     = 0;
-      $username         = 0;
-      $number_of_twits  = 0;
-      $auto_refresh_in_seconds = 0;
-
-      if (isset($matches[1]))
-         {
-         $params = explode (',', $matches[1]);
-         if (isset($params[0]))
-            $widget_title = trim($params[0]);
-
-         if (isset($params[1]))
-            {
-            $username = trim($params[1]);
-            if ($username[0] == '$')
-               $username[0] = '!'; // Replace $ with ! in ticker symbol to avoid conflicts with ticker_links plugin that replaces everything with $ABCD onto links.
-            }
-
-         if (isset($params[2]))
-            $number_of_twits = trim($params[2]);
-
-         if (isset($params[3]))
-            $auto_refresh_in_seconds = trim($params[3]);
-         }
-
-      $widget_html = $this->GetWidgetHTML ($widget_title, $username, $number_of_twits, $auto_refresh_in_seconds);
-
-      $content = preg_replace ('|\[stocktwits([^\]]*)\]|i', $widget_html, $content);
-
       return ($content);
       }
    //------------------------------------------
 
-   //------------------------------------------
-   // Stub just suppresses [stocktwits] tags. Useful for article excerpts of RSS feeds.
-   public function ContentFilter_stub ($content)
-      {
-      $content = preg_replace ('|\[stocktwits([^\]]*)\]|i', '', $content);
-      return ($content);
-      }
    //------------------------------------------
    public function PrintAdminPage ()
       {
@@ -105,8 +65,7 @@ class StockTwits
          {
          $stocktwits_options['widget_title']             = apply_filters  ('content_save_pre', $_POST ['widget_title']);
          $stocktwits_options['username']                 = apply_filters  ('content_save_pre', $_POST ['username']);
-         $stocktwits_options['number_of_twits']          = enforce_values ($_POST ['number_of_twits'], 1, 25);
-         $stocktwits_options['auto_refresh_in_seconds']  = enforce_values ($_POST ['auto_refresh_in_seconds'], 5, 60*60*24);
+         $stocktwits_options['limit']                    = apply_filters  ('content_save_pre', $_POST ['limit']);
 
          update_option($this->stocktwits_op_name, $stocktwits_options);
          $this->stocktwits_options = $stocktwits_options;   // Reinitialize member var with fresh options.
@@ -151,19 +110,14 @@ class StockTwits
             <td width="603"><input type="text" name="widget_title" value="<?php _e(apply_filters('format_to_edit',$this->stocktwits_options['widget_title']), 'StockTwitsPlugin') ?>" /></td>
          </tr>
          <tr>
-            <th scope="col">All or Username or $TICKER:</th>
+            <th scope="col">Enter a Username or $TICKER:</th>
             <td><input type="text" name="username" value="<?php _e(apply_filters('format_to_edit',$this->stocktwits_options['username']), 'StockTwitsPlugin') ?>" />
-            <span class="setting-description">Use: <u>all</u> - for all users, <u>username</u> - for all user messages, <u>$ticker</u> - for all ticker messages</span></td>
+            <span class="setting-description"><u>username</u> - for all user messages, <u>$ticker</u> - for all ticker messages</span></td>
          </tr>
          <tr>
             <th scope="col">Number of messages to display:</th>
-            <td><input type="text" style="width: 30" name="number_of_twits" value="<?php _e(apply_filters('format_to_edit',$this->stocktwits_options['number_of_twits']), 'StockTwitsPlugin') ?>" />
-            <span class="setting-description">Number of tweets to be displayed inside the widget. Use values from: 1 to 25</span></td>
-         </tr>
-         <tr>
-            <th scope="col">Auto refresh period in seconds:</th>
-            <td><input type="text" style="width: 30" name="auto_refresh_in_seconds" value="<?php _e(apply_filters('format_to_edit',$this->stocktwits_options['auto_refresh_in_seconds']), 'StockTwitsPlugin') ?>" />
-            <span class="setting-description">Use values: 5 to 86400 (5 seconds to one day)</span></td>
+            <td><input type="text" style="width: 30" name="limit" value="<?php _e(apply_filters('format_to_edit',$this->stocktwits_options['limit']), 'StockTwitsPlugin') ?>" />
+            <span class="setting-description">Number of messages to be displayed inside the widget. Use values from: 1 to 30</span></td>
          </tr>
       </tbody>
    </table>
@@ -188,9 +142,8 @@ class StockTwits
       $default_options =
          array (
             'widget_title'             => DEFAULT_WIDGET_TITLE,
-            'username'                 => DEFAULT_USERNAME,         // Username or 'all' or ticker symbol
-            'number_of_twits'          => DEFAULT_NUM_OF_TWITS,
-            'auto_refresh_in_seconds'  => DEFAULT_AUTO_REFRESH_IN_SECS,
+            'username'                 => DEFAULT_USERNAME,         
+            'limit'                    => DEFAULT_LIMIT
             );
 
       if (is_array($saved_options = get_option ($this->stocktwits_op_name)))
@@ -211,19 +164,23 @@ class StockTwits
    //------------------------------------------
 
    //------------------------------------------
-   public function GetWidgetHTML ($widget_title=0, $username='all', $number_of_twits=0, $auto_refresh_in_seconds=0)
+   public function GetWidgetHTML ($widget_title=0, $username=0, $limit=0)
       {
       $widget_html = WIDGET_HTML_TEMPLATE;
 
-      $widget_html = preg_replace ('|__TITLE__|',           $widget_title?$widget_title:$this->stocktwits_options['widget_title'],                                   $widget_html);
+      $widget_html = preg_replace ('|__TITLE__|',          $widget_title?$widget_title:$this->stocktwits_options['widget_title'], $widget_html); 
 
-      $username = ($username?$username:$this->stocktwits_options['username']);
-      if ($username[0] == '$')
-         $username[0] = '!';
-      $widget_html = preg_replace ('|__USERNAME__|',        $username,                                                                                               $widget_html);
-      $widget_html = preg_replace ('|__TWITS_NUM__|',       $number_of_twits?$number_of_twits:$this->stocktwits_options['number_of_twits'],                          $widget_html);
-      $widget_html = preg_replace ('|__AUTO_REFRESH__|',    $auto_refresh_in_seconds?$auto_refresh_in_seconds:$this->stocktwits_options['auto_refresh_in_seconds'],  $widget_html);
-      $widget_html = preg_replace ('|__JSON_PROXY_DIR_URL__|',  get_base_dir_url (),                                                                                 $widget_html);
+      if ($this->stocktwits_options['username'][0] == '$') {
+        $username = substr(trim($this->stocktwits_options['username']), 1);
+        $widget_html = preg_replace ('|__SYMBOL__|',       $username, $widget_html);
+        $widget_html = preg_replace ('|__USERNAME__|',     '', $widget_html);
+      }
+      else {
+        $widget_html = preg_replace ('|__USERNAME__|',     $username?$username:$this->stocktwits_options['username'], $widget_html);
+        $widget_html = preg_replace ('|__SYMBOL__|',       '', $widget_html);
+      }
+
+      $widget_html = preg_replace ('|__LIMIT__|',          $limit?$limit:$this->stocktwits_options['limit'], $widget_html);
 
       return ($widget_html);
       }
@@ -285,11 +242,10 @@ function StockTwitsWidget ($args)
 //    stocktwits_widget("Intel Inside", "$INTC");
 //    stocktwits_widget("Intel Inside", "$INTC", 20, 10);
 
-function stocktwits_widget ($widget_title=0, $username=0, $number_of_twits=0, $auto_refresh_in_seconds=0)
+function stocktwits_widget ($widget_title=0, $username=0, $limit=0)
 {
    global $g_StockTwits_Plugin;
-
-   echo $g_StockTwits_Plugin->GetWidgetHTML ($widget_title, $username, $number_of_twits, $auto_refresh_in_seconds);
+   echo $g_StockTwits_Plugin->GetWidgetHTML ($widget_title, $username, $limit);
 }
 //===========================================================================
 
@@ -304,17 +260,7 @@ function StockTwits_AdminPanel ()
 //===========================================================================
 function init_action ()
 {
-   // Make sure the latest version jQuery is loaded from Google servers.
-   wp_enqueue_script('goog_jquery', 'http://www.google.com/jsapi');
-   wp_enqueue_script('stocktwits',  '/' . PLUGINDIR . '/stocktwits/stocktwits.js', array('goog_jquery'));
-}
-//===========================================================================
-
-//===========================================================================
-function header_action2 ()
-{
-   echo '<link type="text/css" rel="stylesheet" href="' . get_base_dir_url () . '/stocktwits.css" />' . "\n";
-
+   wp_enqueue_script('st-widget', 'http://stocktwits.com/addon/widget/2/widget-loader.min.js');
 }
 //===========================================================================
 
