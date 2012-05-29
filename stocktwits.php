@@ -2,7 +2,7 @@
 /*
 Plugin Name: StockTwits
 Plugin URI: http://www.stocktwits.com/
-Version: 1.6
+Version: 1.7
 Author: StockTwits
 Author URI: http://stocktwits.com/
 Description: Plugin shows the most recent posts from www.StockTwits.com website as a widget. Choose to show your stock messages, just the Ticker stream or the All stream.
@@ -53,10 +53,45 @@ class StockTwits
       if (is_feed())
          return ($this->ContentFilter_stub ($content));
 
+      if (!preg_match ('|\[stocktwits([^\]]*)\]|i', $content, $matches))
+       return $content;
+
+      $widget_title     = 0;
+      $username         = 0;
+      $limit            = 0;
+
+      if (isset($matches[1]))
+         {
+         $params = explode (',', $matches[1]);
+         if (isset($params[0]))
+            $widget_title = trim($params[0]);
+
+         if (isset($params[1]))
+            {
+            $username = trim($params[1]);
+            if ($username[0] == '$')
+               $username[0] = '!'; // Replace $ with ! in ticker symbol to avoid conflicts with ticker_links plugin that replaces everything with $ABCD onto links.
+            }
+
+         if (isset($params[2]))
+            $limit = trim($params[2]);
+
+         }
+      $widget_html = $this->GetWidgetHTML ($widget_title, $username, $limit);
+
+      $content = preg_replace ('|\[stocktwits([^\]]*)\]|i', $widget_html, $content);
+
       return ($content);
       }
    //------------------------------------------
 
+   //------------------------------------------
+   // Stub just suppresses [stocktwits] tags. Useful for article excerpts of RSS feeds.
+   public function ContentFilter_stub ($content)
+      {
+      $content = preg_replace ('|\[stocktwits([^\]]*)\]|i', '', $content);
+      return ($content);
+      }
    //------------------------------------------
    public function PrintAdminPage ()
       {
@@ -163,6 +198,7 @@ class StockTwits
       }
    //------------------------------------------
 
+
    //------------------------------------------
    public function GetWidgetHTML ($widget_title=0, $username=0, $limit=0)
       {
@@ -199,7 +235,6 @@ $g_StockTwits_Plugin = new StockTwits();
 //Initialize the admin panel
 add_action ('admin_menu',        'StockTwits_AdminPanel');
 add_action ('init',              'init_action' );
-add_action ('wp_head',           'header_action2',10);    // Load our custom stylesheet after anything else.
 add_action ('plugins_loaded',    'RegisterStockTwitsWidget');
 
 add_filter ('the_content',       array(&$g_StockTwits_Plugin, 'ContentFilter'), 9);
